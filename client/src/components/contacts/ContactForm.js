@@ -17,7 +17,7 @@ const ContactForm = () => {
         type: "personal",
       });
     }
-  }, [current]);
+  }, [current,contactContext]);
 
   const [contact, setContact] = useState({
     name: "",
@@ -39,11 +39,12 @@ const ContactForm = () => {
     }else{
       updateContact(contact);
     }
-     clearAll()
+     clearAll();
   };
 
   const clearAll = () => {
     clearCurrent()
+    console.log("clear")
   }
 
   return (
