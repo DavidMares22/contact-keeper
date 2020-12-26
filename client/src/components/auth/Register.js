@@ -1,6 +1,27 @@
-import React, { useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
+import AlertContext from '../../context/alert/alertContext'
 
-const Register = () => {
+import AuthContext from '../../context/auth/authContext'
+
+
+const Register = props => {
+  const alertContext = useContext(AlertContext)
+  const authContext = useContext(AuthContext)
+
+
+  useEffect(()=>{
+
+    if(authContext.isAuthenticated){
+      props.history.push('/')
+    }
+
+    if (authContext.error === 'User already exists') {
+      alertContext.setAlert(authContext.error,'danger')   
+      authContext.clearErrors()   
+    }
+    // eslint-disable-next-line
+  },[authContext.error,authContext.isAuthenticated,props.history])
+
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -17,7 +38,25 @@ const Register = () => {
 
   const onSubmit = (e) => {
     e.preventDefault()
-    console.log('submit')
+    
+    if (user.name === '' || user.email === '' || user.password === '') {
+      
+      alertContext.setAlert('Please enter all fields','danger')
+    } else if (user.password !== user.password2 ){
+   
+        alertContext.setAlert('Passwords do not match','danger')        
+
+     
+    } else if (user.password.length < 6) {
+      alertContext.setAlert('Password needs to be at least 6 characters long','danger')
+    }else{
+      authContext.register({
+        name: user.name,
+        email: user.email,
+        password: user.password
+      })
+    }
+
   }
 
   return (
