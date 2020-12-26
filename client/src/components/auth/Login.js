@@ -1,6 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 
-const Login = () => {
+import AlertContext from '../../context/alert/alertContext'
+
+import AuthContext from '../../context/auth/authContext'
+
+const Login = props => {
+  const alertContext = useContext(AlertContext)
+  const authContext = useContext(AuthContext)
+
+
+  useEffect(()=>{
+
+    if(authContext.isAuthenticated){
+      props.history.push('/')
+    }
+
+    if (authContext.error === 'Invalid Credentials') {
+      alertContext.setAlert(authContext.error,'danger')   
+      authContext.clearErrors()   
+    }
+    // eslint-disable-next-line
+  },[authContext.error,authContext.isAuthenticated,props.history])
+
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -15,7 +36,16 @@ const Login = () => {
 
   const onSubmit = (e) => {
     e.preventDefault()
-    console.log('login')
+    if ( user.email === '' || user.password === '') {
+      
+      alertContext.setAlert('Please enter all fields','danger')
+    } else{
+      authContext.login({
+        
+        email: user.email,
+        password: user.password
+      })
+    }
   }
 
   return (
