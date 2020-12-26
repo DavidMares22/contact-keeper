@@ -54,6 +54,8 @@ const AuthState = (props) => {
     }
   };
 
+  const logout = () => dispatch({type:LOGOUT})
+
   const login = async (formData) => {
     const config = {
       headers: {
@@ -113,7 +115,8 @@ const AuthState = (props) => {
         register,
         clearErrors,
         loadUser,
-        login
+        login,
+        logout
       }}
     >
       {props.children}
