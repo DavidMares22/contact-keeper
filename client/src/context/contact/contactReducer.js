@@ -1,4 +1,5 @@
 import {
+    GET_CONTACTS,
     ADD_CONTACT,
     DELETE_CONTACT,
     SET_CURRENT,
@@ -6,21 +7,41 @@ import {
     UPDATE_CONTACT,
     FILTER_CONTACTS,
     CLEAR_FILTER,
-    CONTACT_ERROR
+    CONTACT_ERROR,
+    CLEAR_CONTACTS
 } from '../types'
 
 
 export default (state,action) => {
     switch (action.type) {
+
+        case CLEAR_CONTACTS:
+            return{
+                ...state,
+                contacts: null,
+                filtered:null,
+                error:null,
+                current:null
+
+            }
+
+        case GET_CONTACTS:
+            return{
+                ...state,
+                contacts:action.payload,
+                loading:false
+            }
         case ADD_CONTACT:
             return {
                 ...state,
-                contacts: [...state.contacts,action.payload]
+                contacts: [...state.contacts,action.payload],
+                loading:false
             }
         case DELETE_CONTACT:
             return {
                 ...state,
-                contacts: state.contacts.filter(contact => contact.id !== action.payload)
+                contacts: state.contacts.filter(contact => contact.id !== action.payload),
+                loading:false
             }
         case SET_CURRENT:
             return {
