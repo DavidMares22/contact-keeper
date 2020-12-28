@@ -14,7 +14,9 @@ import {
   FILTER_CONTACTS,
   CLEAR_FILTER,
   CONTACT_ERROR,
+  CLEAR_ERRORS
 } from "../types";
+
 
 const ContactState = (props) => {
   const initialState = {
@@ -38,7 +40,11 @@ const ContactState = (props) => {
     }
   };
 
-
+  const clearErrors = () => {
+    dispatch({
+      type: CLEAR_ERRORS,
+    });
+  };
   // Add Contact
 
   const addContact = async (contact) => {
@@ -52,12 +58,13 @@ const ContactState = (props) => {
       dispatch({ type: ADD_CONTACT, payload: res.data });
     } catch (err) {
       // alert(JSON.stringify(err.response.data["errors"][0].msg))
-      dispatch({ type: CONTACT_ERROR, payload: err.response.data["errors"]});
+
+      dispatch({ type: CONTACT_ERROR, payload: err.response.data});
     }
   };
 
   const deleteContact = async id => {
-    try {
+    try { 
       await axios.delete(`/api/contacts/${id}`);
 
       dispatch({
@@ -82,9 +89,22 @@ const ContactState = (props) => {
     dispatch({ type: CLEAR_CURRENT });
   };
 
-  const updateContact = (contact) => {
-    dispatch({ type: UPDATE_CONTACT, payload: contact });
+  const updateContact = async (contact) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    try {
+      const res = await axios.put(`/api/contacts/${contact._id}`, contact, config);
+      
+      dispatch({ type: UPDATE_CONTACT, payload: res.data });
+    } catch (err) {
+      // alert(JSON.stringify(err.response.data["errors"][0].msg))
+      dispatch({ type: CONTACT_ERROR, payload: err.response.msg});
+    }
   };
+
   const filterContacts = (text) => {
     dispatch({ type: FILTER_CONTACTS, payload: text });
   };
@@ -108,7 +128,8 @@ const ContactState = (props) => {
         clearFilter,
         filterContacts,
         getContacts,
-        clearContacts
+        clearContacts,
+        clearErrors
       }}
     >
       {props.children}

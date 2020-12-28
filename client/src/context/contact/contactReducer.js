@@ -8,13 +8,18 @@ import {
     FILTER_CONTACTS,
     CLEAR_FILTER,
     CONTACT_ERROR,
-    CLEAR_CONTACTS
+    CLEAR_CONTACTS,
+    CLEAR_ERRORS
 } from '../types'
 
 
 export default (state,action) => {
     switch (action.type) {
-
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
         case CLEAR_CONTACTS:
             return{
                 ...state,
@@ -56,7 +61,7 @@ export default (state,action) => {
         case UPDATE_CONTACT:
             return {
                 ...state,
-                contacts: state.contacts.map(contact => contact.id === action.payload.id ? action.payload : contact)
+                contacts: state.contacts.map(contact => contact._id === action.payload._id ? action.payload : contact)
             }
         case FILTER_CONTACTS:
             return {

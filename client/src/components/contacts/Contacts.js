@@ -1,11 +1,25 @@
 import React, { useContext, Fragment, useEffect } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import ContactContext from "../../context/contact/contactContext";
+import AlertContext from "../../context/alert/alertContext";
 import ContactItem from "./ContactItem";
 import Spinner from "../../components/layout/Spinner";
 const Contacts = () => {
   const contactContext = useContext(ContactContext);
+  const alertContext = useContext(AlertContext);
   const { contacts, filtered, getContacts, loading } = contactContext;
+
+  useEffect(() => {
+   
+    if (contactContext.error !== null) {
+     
+      contactContext.error["errors"].forEach(element => {
+        alertContext.setAlert(element.msg.toString(), "danger");
+      });
+      contactContext.clearErrors();
+    }
+    // eslint-disable-next-line
+  }, [contactContext.error]);
 
   useEffect(() => {
     getContacts();
